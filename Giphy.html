@@ -11,9 +11,22 @@
     input {
       margin: 10px;
     }
-    button{
+    button, #add-topic{
         background-color: #4aaaa5;
         color:#ffffff;
+    }
+    label{
+      font-weight: bold;
+      max-width: 20%;
+    }
+    form{
+      float: right;
+    }
+   .topicDisplay{
+      float: left;
+    }
+    #topics-view{
+      max-width: 78%;
     }
   </style>
 </head>
@@ -25,11 +38,11 @@
     <div id="buttons-view"></div>
 
     <form id="topic-form">
-      <label for="topic-input">Add a topic Bro</label>
+      <label for="topic-input">Add an animal</label>
       <input type="text" id="topic-input"><br>
 
       <!-- Button triggers new topic to be added -->
-      <input id="add-topic" type="submit" value="Add a topic Bro">
+      <input id="add-topic" type="submit" value="Submit">
     </form>
 
     <!-- topics will get dumped Dere -->
@@ -38,11 +51,11 @@
     <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
     <script type="text/javascript">
       // Initial array of topics
-      var topics = ["dog", "cat", "horse", "lion", "tiger", "bird", "turtle", "frog", "eagle", "chickren", "duck", "monkey", "skunk", "shark", "goat", "crab", "lobster"];
+      var topics = ["dog", "cat", "horse", "lion", "tiger", "bird", "turtle", "frog", "eagle", "chicken", "duck", "monkey", "skunk", "shark", "goat", "crab", "lobster", "capybara", "goldfish", "ferret", "goose", "stingray"];
 
       // displaytopicInfo function re-renders the HTML to display the appropriate content
       function displaytopicInfo() {
-
+        $("#topics-view").empty();
         var topic = $(this).attr("data-name");
         var queryURL = "http://api.giphy.com/v1/gifs/search?limit=10&q=" + topic + "&api_key=dc6zaTOxFJmzC";
 
@@ -52,19 +65,31 @@
           method: "GET"
         }).done(function(response) {
 
-          console.log(response);
-    /*    
-          $("#topics-view").empty();
-          var rating = response.Rated;
-          $("#topics-view").append("Rating: " + rating + "<br> <br>");
-          var year = response.Released;
-          $("#topics-view").append("Released: " + year + "<br> <br>");
-          var plot = response.Plot;
-          $("#topics-view").append("Plot: " + plot + "<br> <br>");
+          for(var i = 0; i < 10; i++){
+            
+            var topicDiv = $("<div class = 'topicDisplay'>");
+            var rating = response.data[i].rating;
+            var pOne = $("<p>").text("Rating: " + rating);
+            pOne.attr("data-name", i);
+            topicDiv.append(pOne);
 
-          var poster = response.Poster;
-          $("#topics-view").append("<img src=" + poster + " width='400px'>");
-     */     
+            var imageUrl = response.data[i].images.fixed_height_still.url;
+            var image = $("<img>").attr("src", imageUrl);
+            topicDiv.append(image);
+
+            $("#topics-view").prepend(topicDiv);
+
+
+    /*      var rating = response.data[i].rating;
+          var pOne = $("<p>").text("Rating: " + rating);
+          $("#topics-view").append(pOne);
+
+          var imageUrl = response.data[i].images.fixed_height_still.url;
+          var image = $("<img>").attr("src", imageUrl);
+         $("#topics-view").append(image); */
+
+
+          }
         });
 
       }
