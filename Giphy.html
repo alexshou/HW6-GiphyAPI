@@ -53,11 +53,20 @@
       // Initial array of topics
       var topics = ["dog", "cat", "horse", "lion", "tiger", "bird", "turtle", "frog", "eagle", "chicken", "duck", "monkey", "skunk", "shark", "goat", "crab", "lobster", "capybara", "goldfish", "ferret", "goose", "stingray"];
 
+      var topicDiv;
+      var rating;
+      var pOne;
+      var imageUrl;
+      var image;
+      var topic;
+      var queryURL;
+      var clickCounter;
+
       // displaytopicInfo function re-renders the HTML to display the appropriate content
       function displaytopicInfo() {
         $("#topics-view").empty();
-        var topic = $(this).attr("data-name");
-        var queryURL = "http://api.giphy.com/v1/gifs/search?limit=10&q=" + topic + "&api_key=dc6zaTOxFJmzC";
+        topic = $(this).attr("data-name");
+        queryURL = "http://api.giphy.com/v1/gifs/search?limit=10&q=" + topic + "&api_key=dc6zaTOxFJmzC";
 
         // Creates AJAX call for the specific topic button being clicked
         $.ajax({
@@ -67,16 +76,18 @@
 
           for(var i = 0; i < 10; i++){
             
-            var topicDiv = $("<div class = 'topicDisplay'>");
-            var rating = response.data[i].rating;
-            var pOne = $("<p>").text("Rating: " + rating);
+            var classImage = "image" + i;
+            topicDiv = $("<div class = 'topicDisplay'>");
+            topicDiv.addClass("image" + i);
+            rating = response.data[i].rating;
+            pOne = $("<p>").text("Rating: " + rating);
             pOne.attr("data-name", i);
             topicDiv.append(pOne);
-
-            var imageUrl = response.data[i].images.fixed_height_still.url;
-            var image = $("<img>").attr("src", imageUrl);
+            console.log(pOne.attr("data-name"));
+            imageUrl = response.data[i].images.fixed_height_still.url;
+            image = $("<img>").attr("src", imageUrl);
             topicDiv.append(image);
-
+            console.log(topicDiv);
             $("#topics-view").prepend(topicDiv);
 
 
@@ -94,9 +105,48 @@
 
       }
 
+        function changeDisplay() {
+        $("#topics-view").empty();
+        // Creates AJAX call for the specific topic button being clicked
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).done(function(response) {
+
+          for(var i = 0; i < 10; i++){
+            
+            var classImage = "image" + i;
+            topicDiv = $("<div class = 'topicDisplay'>");
+            topicDiv.addClass("image" + i);
+            rating = response.data[i].rating;
+            pOne = $("<p>").text("Rating: " + rating);
+            pOne.attr("data-name", i);
+            topicDiv.append(pOne);
+            console.log(pOne.attr("data-name"));
+            if(clickCounter % 2 === 0)
+            {
+              imageUrl = response.data[i].images.fixed_height.url;
+            }
+            else
+            {
+              imageUrl = response.data[i].images.fixed_height_still.url;
+            }
+            
+            image = $("<img>").attr("src", imageUrl);
+            topicDiv.append(image);
+            console.log(topicDiv);
+            $("#topics-view").prepend(topicDiv);
+
+          }
+           clickCounter++;
+        });
+
+      }
+
+
       // Function for displaying topic data
       function renderButtons() {
-
+        clickCounter = 0;
         // Deletes the topics prior to adding new topics
         // (this is necessary otherwise you will have repeat buttons)
         $("#buttons-view").empty();
@@ -132,6 +182,10 @@
 
       // Adding click event listeners to all elements with a class of "topic"
       $(document).on("click", ".topic", displaytopicInfo);
+      $(document).on("click", ".topicDisplay", changeDisplay);
+  //    $(".topicDisplay").on("click", function(event) {
+   //       console.log("image0");
+  //    });
 
       // Calling the renderButtons function to display the intial buttons
       renderButtons();
