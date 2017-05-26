@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>GiphyAPI</title>
+  <style type="text/css">
+    button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+    button{
+        background-color: #4aaaa5;
+        color:#ffffff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div id="buttons-view"></div>
+
+    <form id="topic-form">
+      <label for="topic-input">Add a topic Bro</label>
+      <input type="text" id="topic-input"><br>
+
+      <!-- Button triggers new topic to be added -->
+      <input id="add-topic" type="submit" value="Add a topic Bro">
+    </form>
+
+    <!-- topics will get dumped Dere -->
+    <div id="topics-view"></div>
+
+    <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <script type="text/javascript">
+      // Initial array of topics
+      var topics = ["dog", "cat", "horse", "lion", "tiger", "bird", "turtle", "frog", "eagle", "chickren", "duck", "monkey", "skunk", "shark", "goat", "crab", "lobster"];
+
+      // displaytopicInfo function re-renders the HTML to display the appropriate content
+      function displaytopicInfo() {
+
+        var topic = $(this).attr("data-name");
+        var queryURL = "http://api.giphy.com/v1/gifs/search?limit=10&q=" + topic + "&api_key=dc6zaTOxFJmzC";
+
+        // Creates AJAX call for the specific topic button being clicked
+        $.ajax({
+          url: queryURL,
+          method: "GET"
+        }).done(function(response) {
+
+          console.log(response);
+    /*    
+          $("#topics-view").empty();
+          var rating = response.Rated;
+          $("#topics-view").append("Rating: " + rating + "<br> <br>");
+          var year = response.Released;
+          $("#topics-view").append("Released: " + year + "<br> <br>");
+          var plot = response.Plot;
+          $("#topics-view").append("Plot: " + plot + "<br> <br>");
+
+          var poster = response.Poster;
+          $("#topics-view").append("<img src=" + poster + " width='400px'>");
+     */     
+        });
+
+      }
+
+      // Function for displaying topic data
+      function renderButtons() {
+
+        // Deletes the topics prior to adding new topics
+        // (this is necessary otherwise you will have repeat buttons)
+        $("#buttons-view").empty();
+        // Loops through the array of topics
+        for (var i = 0; i < topics.length; i++) {
+
+          // Then dynamicaly generates buttons for each topic in the array
+          // This code $("<button>") is all jQuery needs to create the beginning and end tag. (<button></button>)
+          var a = $("<button>");
+          // Adds a class of topic to our button
+          a.addClass("topic");
+          // Added a data-attribute
+          a.attr("data-name", topics[i]);
+          // Provided the initial button text
+          a.text(topics[i]);
+          // Added the button to the buttons-view div
+          $("#buttons-view").append(a);
+        }
+      }
+
+      // This function handles events where the add topic button is clicked
+      $("#add-topic").on("click", function(event) {
+        event.preventDefault();
+        // This line of code will grab the input from the textbox
+        var topic = $("#topic-input").val().trim();
+
+        // The topic from the textbox is then added to our array
+        topics.push(topic);
+
+        // Calling renderButtons which handles the processing of our topic array
+        renderButtons();
+      });
+
+      // Adding click event listeners to all elements with a class of "topic"
+      $(document).on("click", ".topic", displaytopicInfo);
+
+      // Calling the renderButtons function to display the intial buttons
+      renderButtons();
+    </script>
+  </div>
+</body>
+
+</html>
