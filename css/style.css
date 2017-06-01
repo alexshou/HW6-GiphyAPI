@@ -1,0 +1,28 @@
+   button,
+    div,
+    form,
+    input {
+      margin: 10px;
+    }
+    button, #add-topic{
+        background-color: #4aaaa5;
+        color:#ffffff;
+    }
+    label{
+      font-weight: bold;
+      max-width: 20%;
+    }
+    form{
+      float: right;
+    }
+   .topicDisplay{
+      float: left;
+    }
+    #topics-view{
+      max-width: 78%;
+    }
+    p{
+      padding-bottom: 5px;
+      font-size: 20px;
+    }
+ 
